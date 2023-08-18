@@ -12,11 +12,15 @@ import { BiUser,BiLogOutCircle } from "react-icons/bi";
 import { RxDashboard } from "react-icons/rx";
 
 import SignUpInModal from "./SignUpInModal/SignUpInModal"
+import { UseContext } from "@/app/context/context";
 
 export default function MainHeader() {
   const [formToggle, setFormToggle] = useState("login");
   const [accountDropdown, setAccountDropdown] = useState(false)
-  const user = true;
+  const user = false;
+
+  const  {loggedUser}  = UseContext();
+
 
   useEffect(() => {
     window.addEventListener("click", (e) => {
@@ -33,7 +37,7 @@ export default function MainHeader() {
 
             <div className="hidden md:block">
               <Link href="/">
-                <img src="/logo.png" className="w-48 lg:w-52 h-10" alt="logo" />
+                <img src="/logo.png" className="w-32" alt="logo" />
               </Link>
             </div>
 

@@ -3,15 +3,19 @@ import Link from "next/link";
 
 import { BsFacebook, BsTelephoneInbound, BsYoutube } from "react-icons/bs";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { AiFillInstagram,AiOutlineLogin, AiFillEye, AiFillUnlock, AiFillEyeInvisible} from "react-icons/ai";
+import {
+  AiFillInstagram,
+  AiOutlineLogin,
+  AiFillEye,
+  AiFillUnlock,
+  AiFillEyeInvisible,
+} from "react-icons/ai";
 import { BiLogOutCircle, BiUser } from "react-icons/bi";
 import { RxDashboard } from "react-icons/rx";
-import { MdEmail ,MdOutlineEmail} from "react-icons/md";
+import { MdEmail, MdOutlineEmail } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 
-
 export default function TopHeader() {
-
   return (
     <div className="hidden md:block bg-primary py-1 border-b text-base-100/80">
       <div className="container mx-auto font-medium">
@@ -57,7 +61,7 @@ export default function TopHeader() {
                   className="flex items-center gap-1 hover:text-base-100 duration-200"
                 >
                   <BsTelephoneInbound className="text-[13px]" />
-                  01531714355
+                  +880 1706260994
                 </Link>
               </li>
 
@@ -67,7 +71,7 @@ export default function TopHeader() {
                   className="flex items-center gap-1 hover:text-base-100 duration-200"
                 >
                   <MdOutlineEmail className="text-[17px]" />
-                  beautyqueen@gmail.com
+                  usnotashop@gmail.com
                 </Link>
               </li>
             </ul>

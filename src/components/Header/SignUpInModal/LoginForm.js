@@ -6,13 +6,53 @@ import { MdEmail } from "react-icons/md";
 
 export default function LoginForm() {
   const [showPassword,setShowPassword] = useState(false);
+  const [loginError,setLoginError] = useState("");
+  const [loading,setLoading] = useState(false);
+
+  const handelLogin = e => {
+    e.preventDefault();
+
+    setLoading(true)
+
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    const loginInfo = {
+      email,
+      password,
+    };
+
+    fetch("http://localhost:5000/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginInfo),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data?.status === "fail"){
+          setLoginError(data.message)
+        }
+        if (data?.status === "success") {
+          localStorage.setItem("usnota_jwt", data?.token);
+          form.reset()
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      }).finally(()=>{
+        setLoading(false)
+      })
+  }
 
   return (
     <div>
-      <Image src="/logo.png" alt="" className="w-52 mx-auto" width="100" height="100" />
+      <img src="/logo.png" alt="" className="w-32 mx-auto" width="100" height="100" />
       <h6 className="text-lg font-medium mt-2 text-center">Login</h6>
 
-      <form>
+      <form onSubmit={handelLogin}>
         <div className="mt-10 text-neutral">
           <div className="mb-6">
             <div className="relative">
@@ -21,6 +61,7 @@ export default function LoginForm() {
               </span>
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
                 className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
                 required
@@ -36,6 +77,7 @@ export default function LoginForm() {
 
               <input
                 type={ `${showPassword ? "text" : "password"}`}
+                name="password"
                 placeholder="Password"
                 className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
                 required
@@ -54,6 +96,10 @@ export default function LoginForm() {
               </div>
             </div>
           </div>
+
+          {
+            loginError && <p className="text-sm text-red-500">{loginError}</p>
+          }
 
           <div className="mb-4 flex justify-between items-center">
             <label className="label gap-2 justify-start items-center cursor-pointer">
@@ -79,8 +125,11 @@ export default function LoginForm() {
               <button
                 type="submit"
                 className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300"
+                disabled={loading && true}
               >
-                Log In
+                {
+                  loading ? "Loading..." : "Log In"
+                }
               </button>
             </div>
           </div>

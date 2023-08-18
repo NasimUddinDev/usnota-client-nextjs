@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { AiFillUnlock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
@@ -10,7 +9,7 @@ export default function SignupForm() {
 
   return (
     <div>
-      <Image src="/logo.png" alt="" className="w-52 mx-auto" width="100" height="100" />
+      <img src="/logo.png" alt="" className="w-32 mx-auto" width="100" height="100" />
       <h6 className="text-lg font-medium mt-2 text-center">signup</h6>
 
       <form>
