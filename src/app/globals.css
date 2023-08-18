@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active {
+  color: #e11e63;
+}
+
+.container {
+  max-width: 95%;
+  margin: auto;
+}
+
+.shadow {
+  box-shadow: 0 20px 27px 0px #0000000d !important;
+}
+.shadow-lg {
+  box-shadow: 3px -2px 20px 0px #0000000c, 0px 4px 20px 0px #0000000c !important;
+}
+
+@media only screen and (min-width: 1250px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* ---------- Home Hero CSS -------------- */
+.slider img {
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (min-width: 768px) {
+  .slider {
+    width: calc(100% - 256px);
+  }
+
+  .slider img {
+    height: 322px;
+  }
+}
+
+.categoryDropdown,
+.categorySubDropdown {
+  display: none;
+}
+
+.category li:hover .categoryDropdown {
+  display: block !important;
+}
+.categoryDropdown li:hover .categorySubDropdown {
+  display: block !important;
+}
+
+.hover-go:hover svg {
+  padding-left: 5px;
+}
+
+.product-card:hover img {
+  transform: scale(1.1);
+}
+
+.shopPages .ShopCategory::-webkit-scrollbar{
+  display:none;
+}
+
+.shopPages .ShopProducts{
+  width: calc(100% - 288px);
+}
+
+.dropdown {
+  max-height: 0px;
+  overflow: hidden;
+  display: none;
+
+  transition: max-height 0.3s;
+}
+
+.dropdownShow {
+  max-height: max-content;
+  display: block;
+}
+.category-wrap::-webkit-scrollbar {
+  width: 3px;
+}
+.category-wrap::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+
+
+/* Account page */
+.accountSidebar::-webkit-scrollbar{
+  display:none;
+}
+.accountContent{
+  width: calc(100% - 240px);
+}
+
+
+.rb-tabs-active-item {
+  background: #e11e63 !important;
+}
