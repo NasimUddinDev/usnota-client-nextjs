@@ -1,11 +1,16 @@
-import { UseContext } from "@/app/context/context";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+
 import { AiFillUnlock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { BsFacebook } from "react-icons/bs";
+import { FcGoogle } from "react-icons/fc";
 import { MdEmail } from "react-icons/md";
 
-export default function LoginForm() {
+import Head from "next/head";
+import { UseContext } from "@/app/context/context";
+import Header from "@/components/Header/Header";
+
+export default function Login() {
   const [showPassword,setShowPassword] = useState(false);
   const {login,loginError,loading} = UseContext();
 
@@ -27,7 +32,14 @@ export default function LoginForm() {
   }
 
   return (
-    <div>
+    <>
+   
+      <Head>
+        <title>Join - Instantkaj</title>
+      </Head>
+    {/* <Header/>    */}
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-[95%] sm:w-96 shadow-lg p-6 rounded">
       <img src="/logo.png" alt="" className="w-32 mx-auto" width="100" height="100" />
       <h6 className="text-lg font-medium mt-2 text-center">Login</h6>
 
@@ -115,6 +127,18 @@ export default function LoginForm() {
         </div>
       </form> 
 
-    </div>
-  )
+          <div>
+            <div className="divider text-neutral/50">OR</div>
+            <button className="w-full py-2 font-medium text-base-100 bg-blue-600 rounded hover:bg-opacity-90 duration-300 flex justify-center gap-4 items-center">
+              <BsFacebook className="text-xl" /> Continue with Facebook
+            </button>
+
+            <button className="mt-4 w-full py-2 font-medium text-neutral border border-neutral/50 rounded hover:bg-opacity-90 duration-300 flex gap-4 justify-center items-center">
+              <FcGoogle className="text-xl" /> Continue with Google
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
