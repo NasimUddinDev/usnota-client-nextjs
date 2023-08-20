@@ -19,9 +19,14 @@ import SignUpInModal from "./SignUpInModal/SignUpInModal";
 import { UseContext } from "@/app/context/context";
 
 export default function MainHeader() {
+  const [searchDropdown, setSearchDropdown] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [products, setProducts] = useState([]);
+
   const [formToggle, setFormToggle] = useState("login");
   const [accountDropdown, setAccountDropdown] = useState(false);
   const { loggedUser, setLoggedUser } = UseContext();
+
   console.log(loggedUser);
 
   useEffect(() => {
@@ -34,6 +39,27 @@ export default function MainHeader() {
       }
     });
   }, []);
+
+
+  useEffect(() => {
+    fetch(`https://usnotafashion-server.vercel.app/products`)
+      .then((res) => res.json())
+      .then((data) => {
+        const product = data.filter((product) =>
+          product.title.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setProducts(product);
+      });
+  }, [searchText]);
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".searchInput")) {
+        setSearchDropdown(false);
+      }
+    });
+  }, []);
+
 
   const handelLogout = () => {
     localStorage.removeItem("usnota_jwt");
@@ -54,12 +80,39 @@ export default function MainHeader() {
             <div className="relative flex">
               <input
                 type="text"
+                onChange={(e) => setSearchText(e.target.value)}
+                onClick={() => setSearchDropdown(true)}
                 placeholder="search Product..."
                 className="searchInput border w-full px-3 py-1.5 rounded outline-none rounded-r-0 border-r-0"
               />
               <div className="px-3 text-lg text-base-100 bg-primary flex justify-center items-center rounded-r">
                 <BsSearch />
               </div>
+
+              {searchDropdown && (
+                <div className="searchDropdown absolute w-full bg-base-100 p-4 shadow-lg max-h-96 overflow-y-auto top-full">
+                  <ul>
+                    {products?.map((product) => (
+                      <li
+                        onClick={() => setSearchDropdown(false)}
+                        className="hover:bg-gray-100 p-1"
+                      >
+                        <Link
+                          href={`/products/${product.title}`}
+                          className="flex gap-2 items-center"
+                        >
+                          <img
+                            src={product?.thumbnail}
+                            alt=""
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <h6>{product.title}</h6>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 
@@ -117,14 +170,17 @@ export default function MainHeader() {
                       </div>
                     </li>
 
-                    <li>
-                      <Link
-                        href="/dashboard"
-                        className="border-b px-3 py-1.5 flex items-center gap-1 hover:bg-gray-200 hover:text-primary duration-300"
-                      >
-                        <RxDashboard className="text-base" /> Dashboard
-                      </Link>
-                    </li>
+                      {
+                        loggedUser?.data?.role === "admin" && 
+                        <li>
+                          <Link
+                            href="/dashboard"
+                            className="border-b px-3 py-1.5 flex items-center gap-1 hover:bg-gray-200 hover:text-primary duration-300"
+                          >
+                            <RxDashboard className="text-base" /> Dashboard
+                          </Link>
+                        </li>
+                      }
 
                     <li>
                       <Link

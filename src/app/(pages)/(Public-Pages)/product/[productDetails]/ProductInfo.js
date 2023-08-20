@@ -1,20 +1,24 @@
-import  { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { FiHeart, FiMinusCircle, FiPlusCircle, FiShare2 } from "react-icons/fi";
 import { FaOpencart, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { AiOutlineCheck } from "react-icons/ai";
 
-const ProductInfo = ({ product }) => {
-
-   const thumbnail=""
-   const images=[]
-   const title="Hello world"
-   const rating=4
-   const price=400
-   const brand="Apple"
-   const category="category"
-   const discountPercentage="10"
-   const size=["42", "44"]
+const ProductInfo = () => {
+  const thumbnail = "";
+  const images = [];
+  const title = "Hello world";
+  const rating = 4;
+  const price = 400;
+  const brand = "No Brand";
+  const category = "category";
+  const discountPercentage = "10";
+  const sizes = ["38", "40", "42", "44"];
+  const colors = ["red", "green", "yellow", "blue", "black"];
 
   const [image, setImage] = useState(thumbnail || images[0]);
+  const [selectedSize, setSelectedSize] = useState({});
+  const [selectedColor, setSelectedColor] = useState({});
 
   // Rating number to start convert
   const ratingStar = Array.from({ length: 5 }, (element, index) => {
@@ -30,7 +34,6 @@ const ProductInfo = ({ product }) => {
       </span>
     );
   });
-
 
   return (
     <div className="lg:flex gap-6">
@@ -80,19 +83,13 @@ const ProductInfo = ({ product }) => {
           </div>
         </div>
 
-        {/* rating  */}
+        {/* rating & wishlist */}
         <div className="flex justify-between items-center">
           <div className="flex gap-px text-sm">{ratingStar}</div>
-          <div className="flex gap-4 items-center">
-            <button
-              className={`shadow-lg p-3 rounded-full`}
-            >
-              <FiHeart />
-            </button>
-            <button className="shadow-lg p-3 rounded-full">
-              <FiShare2 />
-            </button>
-          </div>
+
+          <button className={`shadow-lg p-3 rounded-full`}>
+            <FiHeart />
+          </button>
         </div>
 
         {/* Price */}
@@ -109,18 +106,39 @@ const ProductInfo = ({ product }) => {
         </div>
 
         {/* Size */}
-        {size && (
-          <div className="flex gap-4 items-center">
-            <p>Size:</p>
+        {sizes && (
+          <div className="flex gap-4 items-center mb-3">
+            <p>Size :</p>
 
             <div className="flex gap-2 items-center">
-              {size.length &&
-                size.map((size) => (
+              {sizes.length &&
+                sizes.map((size,i) => (
                   <button
-                  
-                    className="py-2 px-3 rounded border scale-[.96] hover:scale-[1] hover:border-neutral duration-300"
+                    onClick={()=>setSelectedSize({size, index:i})}
+                    className={`${i === selectedSize.index && "bg-primary text-base-100"} text-[15px] py-1.5 px-2.5 rounded border scale-[.96] hover:scale-[1] hover:border-primary duration-300`}
                   >
-                    {size.value}
+                    {size}
+                  </button>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {colors && (
+          <div className="flex gap-4 items-center mb-3">
+            <p>Color :</p>
+
+            <div className="flex gap-2 items-center">
+              {colors.length &&
+                colors.map((color,i) => (
+                  <button
+                    onClick={()=>setSelectedColor({color, index:i})}
+                    style={{background: color}}
+                    className={`opacity-80 text-[15px] w-6 h-6 rounded-full border scale-[.96] hover:scale-[1] text-base-100 flex justify-center items-center`}
+                  >
+                    {
+                      i === selectedColor.index && <AiOutlineCheck/>
+                    }
                   </button>
                 ))}
             </div>
@@ -128,13 +146,10 @@ const ProductInfo = ({ product }) => {
         )}
 
         {/* Buttons */}
-        <button
-              
-              className="w-40 bg-primary text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300"
-            >
-              <FaOpencart />
-              Add To Card
-            </button>
+        <button className="w-40 bg-primary text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300">
+          <FaOpencart />
+          Add To Card
+        </button>
       </div>
     </div>
   );

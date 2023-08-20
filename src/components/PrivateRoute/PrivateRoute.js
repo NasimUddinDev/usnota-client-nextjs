@@ -1,5 +1,5 @@
 "use client";
-import Login from "@/app/(Public-Pages)/login/page";
+import Login from "@/app/(pages)/(Public-Pages)/login/page";
 import { UseContext } from "@/app/context/context";
 
 export default function PrivateRoute ({ children }) {

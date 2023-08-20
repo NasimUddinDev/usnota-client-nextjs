@@ -15,17 +15,13 @@ export default function Profile() {
             <h1 className="mt-2 text-xl">Jack Ma</h1>
           </div>
 
-          <div className="col-span-2 grid grid-cols-2 lg:grid-cols-4 gap-4 items-center text-center text-neutral py-5">
+          <div className="col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-4 items-center text-center text-neutral py-5">
             <div className="border-r border-neutral/50">
               <h1 className="font-medium">My Order</h1>
               <p className="font-medium">৳00</p>
             </div>
             <div className="lg:border-r border-neutral/50">
               <h1 className="font-medium">My Wishlist</h1>
-              <p className="font-medium">৳00</p>
-            </div>
-            <div className="border-r border-neutral/50">
-              <h1 className="font-medium">Followed Store</h1>
               <p className="font-medium">৳00</p>
             </div>
             <div>

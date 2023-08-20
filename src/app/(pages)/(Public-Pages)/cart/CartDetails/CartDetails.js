@@ -10,9 +10,8 @@ const CartDetails = ({ cart }) => {
     0
   );
 
-  const shipping = 80;
   const tax = 0;
-  const grandTotal = subTotal + tax + parseInt(shipping);
+  const grandTotal = subTotal + tax;
 
   return (
     <div className="mt-8 lg:mt-0 px-4 pt-8 pb-5 shadow-lg text-neutral rounded border">
@@ -25,15 +24,6 @@ const CartDetails = ({ cart }) => {
       </div>
 
       <div className="text-neutral/90">
-        <div className="flex justify-between items-center border-b py-1">
-          <p>
-            Shipping <small>(in Dhaka)</small>
-          </p>
-          <p>
-            ৳<span> {shipping}</span>
-          </p>
-        </div>
-
         <div className="flex justify-between items-center border-b py-1">
           <p>Tax</p>
           <p>

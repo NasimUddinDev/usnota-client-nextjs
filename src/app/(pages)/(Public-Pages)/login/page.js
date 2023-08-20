@@ -129,10 +129,6 @@ export default function Login() {
 
           <div>
             <div className="divider text-neutral/50">OR</div>
-            <button className="w-full py-2 font-medium text-base-100 bg-blue-600 rounded hover:bg-opacity-90 duration-300 flex justify-center gap-4 items-center">
-              <BsFacebook className="text-xl" /> Continue with Facebook
-            </button>
-
             <button className="mt-4 w-full py-2 font-medium text-neutral border border-neutral/50 rounded hover:bg-opacity-90 duration-300 flex gap-4 justify-center items-center">
               <FcGoogle className="text-xl" /> Continue with Google
             </button>
