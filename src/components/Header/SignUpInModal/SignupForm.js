@@ -3,16 +3,54 @@ import { useState } from "react";
 import { AiFillUnlock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
+import { BsPhoneFill } from "react-icons/bs";
 
 export default function SignupForm() {
   const [showPassword,setShowPassword] = useState(false);
+  const [loading,setLoading] = useState(false);
+
+  const handelSignup = e => {
+    e.preventDefault();
+    setLoading(true)
+
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const number = form.number.value;
+    const password = form.password.value;
+
+    const newUser = {
+      name,
+      email,
+      number,
+      password
+    }
+
+    fetch("http://localhost:5000/api/v1/user/process-register",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.status === "success"){
+        alert(data.message)
+        form.reset()
+      }
+    })
+    .finally(()=>{
+      setLoading(false)
+    })
+  }
 
   return (
     <div>
       <img src="/logo.png" alt="" className="w-32 mx-auto" width="100" height="100" />
       <h6 className="text-lg font-medium mt-2 text-center">signup</h6>
 
-      <form>
+      <form onSubmit={handelSignup}>
         <div className="mt-10 text-neutral">
             <div className="relative mb-6">
               <span className="absolute bottom-2 text-neutral/80">
@@ -20,6 +58,7 @@ export default function SignupForm() {
               </span>
               <input
                 type="text"
+                name="name"
                 placeholder="Full Name"
                 className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
                 required
@@ -32,7 +71,21 @@ export default function SignupForm() {
               </span>
               <input
                 type="email"
+                name="email"
                 placeholder="Email"
+                className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
+                required
+              />
+            </div>
+
+            <div className="relative mb-6">
+              <span className="absolute bottom-2 text-neutral/80">
+                <BsPhoneFill />
+              </span>
+              <input
+                type="text"
+                name="number"
+                placeholder="Number"
                 className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
                 required
               />
@@ -45,6 +98,7 @@ export default function SignupForm() {
 
               <input
                 type={ `${showPassword ? "text" : "password"}`}
+                name="password"
                 placeholder="Password"
                 className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
                 required
@@ -68,8 +122,11 @@ export default function SignupForm() {
               <button
                 type="submit"
                 className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300"
+                disabled={loading && true}
               >
-                Sign Up
+                {
+                  loading ? "Loading..." : "Sign Up"
+                }
               </button>
             </div>
           </div>
