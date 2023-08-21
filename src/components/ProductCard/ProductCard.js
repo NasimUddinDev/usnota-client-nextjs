@@ -1,13 +1,14 @@
-import Image from "next/image";
-import Link from "next/link";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import Image from 'next/image';
+import Link from 'next/link';
+import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 
-const ProductCard = () => {
+const ProductCard = ({ product }) => {
+  const thumbnail = product?.thumbnail;
+  const discountPercentage = product?.discountPercentage;
+  const title = product?.title;
+  const price = product?.price;
+  const rating = product?.rating;
 
-  const discountPercentage = 5;
-  const title = "Japani Silk Sharee"
-  const price = 450;
-  const rating = 3.5;
   const ratingStar = Array.from({ length: 5 }, (element, index) => {
     return (
       <span key={index}>
@@ -24,10 +25,10 @@ const ProductCard = () => {
 
   return (
     <div className="mt-4 hover:shadow-lg rounded overflow-hidden product-card duration-300">
-      <Link href={`/product/${title}`}>
+      <Link href={`/product/${product?._id}`}>
         <div className="overflow-hidden relative">
-        <Image
-            src="https://i.pinimg.com/236x/41/54/63/415463cf4b47442bf17fec29dbb7d6b5.jpg"
+          <Image
+            src={thumbnail}
             alt=""
             width="100"
             height="100"
@@ -42,7 +43,7 @@ const ProductCard = () => {
         </div>
         <div className="p-2">
           <h1 className="text-lg font-medium mb-1">
-            {title.length > 40 ? `${title.slice(0, 40)}...` : title}
+            {title?.length > 40 ? `${title?.slice(0, 40)}...` : title}
           </h1>
           <div className="flex items-center gap-2">
             <p className="text-primary text-lg">

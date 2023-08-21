@@ -1,44 +1,46 @@
-"use client";
-import { createContext, useContext, useEffect, useState } from "react";
+'use client';
+import { createContext, useContext, useEffect, useState } from 'react';
 export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [loginError, setLoginError] = useState("");
+  const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const login = (loginInfo) => {
+  const [products, setProducts] = useState([]);
+
+  const login = loginInfo => {
     setLoading(true);
 
-    fetch("http://localhost:5000/api/v1/auth/login", {
-      method: "POST",
+    fetch('http://localhost:5000/api/v1/auth/login', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(loginInfo),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.status === "fail") {
+      .then(res => res.json())
+      .then(data => {
+        if (data?.status === 'fail') {
           setLoginError(data.message);
         }
-        if (data?.status === "success") {
-          localStorage.setItem("usnota_jwt", data?.token);
+        if (data?.status === 'success') {
+          localStorage.setItem('usnota_jwt', data?.token);
 
-          fetch("http://localhost:5000/api/v1/user/me", {
+          fetch('http://localhost:5000/api/v1/user/me', {
             headers: {
-              authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
+              authorization: `bearer ${localStorage.getItem('usnota_jwt')}`,
             },
           })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.status === "success") {
+            .then(res => res.json())
+            .then(data => {
+              if (data.status === 'success') {
                 setLoggedUser(data);
               }
             });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       })
       .finally(() => {
@@ -46,17 +48,26 @@ const ContextProvider = ({ children }) => {
       });
   };
 
-  
   useEffect(() => {
-    fetch("http://localhost:5000/api/v1/user/me", {
+    fetch('http://localhost:5000/api/v1/user/me', {
       headers: {
-        authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
+        authorization: `bearer ${localStorage.getItem('usnota_jwt')}`,
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
           setLoggedUser(data);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/v1/product')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          setProducts(data);
         }
       });
   }, []);
@@ -67,6 +78,7 @@ const ContextProvider = ({ children }) => {
     login,
     loginError,
     loading,
+    products,
   };
   return <Context.Provider value={contextInfo}>{children}</Context.Provider>;
 };

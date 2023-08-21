@@ -1,51 +1,48 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useState, useEffect } from "react";
+'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
-import { BsSearch } from "react-icons/bs";
-import { RiShoppingCartLine } from "react-icons/ri";
-import { FiHeart } from "react-icons/fi";
+import { BsSearch } from 'react-icons/bs';
+import { RiShoppingCartLine } from 'react-icons/ri';
+import { FiHeart } from 'react-icons/fi';
 import {
   AiOutlineLogin,
   AiOutlineUnorderedList,
   AiOutlineSetting,
-} from "react-icons/ai";
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import { BiUser, BiLogOutCircle } from "react-icons/bi";
-import { RxDashboard } from "react-icons/rx";
+} from 'react-icons/ai';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import { BiUser, BiLogOutCircle } from 'react-icons/bi';
+import { RxDashboard } from 'react-icons/rx';
 
-import SignUpInModal from "./SignUpInModal/SignUpInModal";
-import { UseContext } from "@/app/context/context";
+import SignUpInModal from './SignUpInModal/SignUpInModal';
+import { UseContext } from '@/app/context/context';
 
 export default function MainHeader() {
   const [searchDropdown, setSearchDropdown] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState([]);
 
-  const [formToggle, setFormToggle] = useState("login");
+  const [formToggle, setFormToggle] = useState('login');
   const [accountDropdown, setAccountDropdown] = useState(false);
   const { loggedUser, setLoggedUser } = UseContext();
 
-  console.log(loggedUser);
-
   useEffect(() => {
-    window.addEventListener("click", (e) => {
+    window.addEventListener('click', e => {
       if (
-        !e.target.closest(".accountDropdownBtn") &&
-        !e.target.closest(".userInfo")
+        !e.target.closest('.accountDropdownBtn') &&
+        !e.target.closest('.userInfo')
       ) {
         setAccountDropdown(false);
       }
     });
   }, []);
 
-
   useEffect(() => {
     fetch(`https://usnotafashion-server.vercel.app/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        const product = data.filter((product) =>
+      .then(res => res.json())
+      .then(data => {
+        const product = data.filter(product =>
           product.title.toLowerCase().includes(searchText.toLowerCase())
         );
         setProducts(product);
@@ -53,16 +50,15 @@ export default function MainHeader() {
   }, [searchText]);
 
   useEffect(() => {
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".searchInput")) {
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.searchInput')) {
         setSearchDropdown(false);
       }
     });
   }, []);
 
-
   const handelLogout = () => {
-    localStorage.removeItem("usnota_jwt");
+    localStorage.removeItem('usnota_jwt');
     setLoggedUser(null);
   };
 
@@ -80,7 +76,7 @@ export default function MainHeader() {
             <div className="relative flex">
               <input
                 type="text"
-                onChange={(e) => setSearchText(e.target.value)}
+                onChange={e => setSearchText(e.target.value)}
                 onClick={() => setSearchDropdown(true)}
                 placeholder="search Product..."
                 className="searchInput border w-full px-3 py-1.5 rounded outline-none rounded-r-0 border-r-0"
@@ -92,7 +88,7 @@ export default function MainHeader() {
               {searchDropdown && (
                 <div className="searchDropdown absolute w-full bg-base-100 p-4 shadow-lg max-h-96 overflow-y-auto top-full">
                   <ul>
-                    {products?.map((product) => (
+                    {products?.map(product => (
                       <li
                         onClick={() => setSearchDropdown(false)}
                         className="hover:bg-gray-100 p-1"
@@ -138,7 +134,7 @@ export default function MainHeader() {
               <h1 className="font-medium">৳00</h1>
             </Link>
 
-            {loggedUser?.status === "success" ? (
+            {loggedUser?.status === 'success' ? (
               <div className="relative">
                 <button
                   onClick={() => setAccountDropdown(!accountDropdown)}
@@ -170,17 +166,16 @@ export default function MainHeader() {
                       </div>
                     </li>
 
-                      {
-                        loggedUser?.data?.role === "admin" && 
-                        <li>
-                          <Link
-                            href="/dashboard"
-                            className="border-b px-3 py-1.5 flex items-center gap-1 hover:bg-gray-200 hover:text-primary duration-300"
-                          >
-                            <RxDashboard className="text-base" /> Dashboard
-                          </Link>
-                        </li>
-                      }
+                    {loggedUser?.data?.role === 'admin' && (
+                      <li>
+                        <Link
+                          href="/dashboard"
+                          className="border-b px-3 py-1.5 flex items-center gap-1 hover:bg-gray-200 hover:text-primary duration-300"
+                        >
+                          <RxDashboard className="text-base" /> Dashboard
+                        </Link>
+                      </li>
+                    )}
 
                     <li>
                       <Link
@@ -218,7 +213,7 @@ export default function MainHeader() {
                 <button
                   className="flex items-center gap-1 hover:text-primary duration-200"
                   onClick={() => {
-                    setFormToggle("login");
+                    setFormToggle('login');
                     window.my_modal_2.showModal();
                   }}
                 >
