@@ -1,13 +1,15 @@
+'use client';
 import ProductInfo from "./ProductInfo";
 import RightSideInfo from "./RightSideInfo";
 
-export default function ProductDetails() {
+export default function ProductDetails({params}) {
+
   return (
     <section className="pb-8">
       <div className="container">
         <div className="lg:flex shadow-lg mt-4 rounded overflow-hidden">
           <div className="lg:w-[75%] bg-base-100 p-4 text-neutral">
-            <ProductInfo />
+            <ProductInfo params={params} />
           </div>
 
           <div className="lg:w-[25%] bg-stone-50 p-4 text-sm">

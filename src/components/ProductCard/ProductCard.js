@@ -25,7 +25,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="mt-4 hover:shadow-lg rounded overflow-hidden product-card duration-300">
-      <Link href={`/product/${product?._id}`}>
+      <Link href={`/product/${product?.slug}`}>
         <div className="overflow-hidden relative">
           <Image
             src={thumbnail}
