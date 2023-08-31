@@ -1,5 +1,8 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
+import Swal from 'sweetalert2'
+  import { toast } from 'react-toastify';
+
 export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
@@ -48,6 +51,7 @@ const ContextProvider = ({ children }) => {
       });
   };
 
+  // Get Logged user
   useEffect(() => {
     fetch('http://localhost:5000/api/v1/user/me', {
       headers: {
@@ -62,6 +66,8 @@ const ContextProvider = ({ children }) => {
       });
   }, []);
 
+
+  // Get all products
   useEffect(() => {
     fetch('http://localhost:5000/api/v1/product')
       .then(res => res.json())
@@ -72,6 +78,86 @@ const ContextProvider = ({ children }) => {
       });
   }, []);
 
+
+  //------- Handel cart
+  const localStorageCart = JSON.parse(localStorage.getItem("usnota_cart"));
+  const [carts, setCarts] = useState(localStorageCart || []);
+  useEffect(() => {
+    localStorage.setItem("usnota_cart", JSON.stringify(carts));
+  }, [carts]);
+
+  // // Add Cart 
+  const handelAddToCart = ({product, quantity, selectedSize, selectedColor}) => {
+    if(product.size.length > 0  && !selectedSize){
+     return Swal.fire(
+        'Please Select Size',
+        "",
+        'warning',
+      )
+    }
+
+    if(product.color.length > 0  && !selectedColor){
+     return Swal.fire(
+        'Please Select Color',
+        "",
+        'warning'
+      )
+    }
+
+    const existed = carts?.find((item) => item.size === selectedSize && item.color === selectedColor);
+    if(existed){
+      return Swal.fire(
+        'Already Added This Product',
+        'If you want to increase Product quantity, please go cart page and increase quantity.',
+        'warning',
+      )
+    }
+
+    setCarts([...carts, { productId: product._id, quantity: quantity || 1, size: selectedSize, color: selectedColor}]);
+
+    toast.success("Add to Cart Success", {
+      position: "top-center",
+      autoClose: 1500,
+    });
+  };
+
+  const handelIncreaseCart = (product) => {
+    const existed = carts.find((item) => item._id === product._id);
+    if (existed) {
+      setCarts(
+        carts.map((item) =>
+          item._id === product._id
+            ? { ...existed, quantity: existed.quantity + 1 }
+            : item
+        )
+      );
+    }
+  };
+
+  const handelDecreaseCart = (product) => {
+    const existed = carts.find((item) => item._id === product._id);
+    if (existed.quantity > 1) {
+      setCarts(
+        carts.map((item) =>
+          item._id === product._id
+            ? { ...existed, quantity: existed.quantity - 1 }
+            : item
+        )
+      );
+    }
+  };
+
+  // Delete Cart
+  const handelDeleteCart = (product) => {
+    const confirm = window.confirm("Are you sure delete this item");
+    if (confirm) {
+      const newCart = carts.filter(
+        (cartProduct) => cartProduct._id !== product._id
+      );
+      setCarts(newCart);
+    }
+  };
+
   const contextInfo = {
     loggedUser,
     setLoggedUser,
@@ -79,6 +165,11 @@ const ContextProvider = ({ children }) => {
     loginError,
     loading,
     products,
+    carts,
+    handelAddToCart,
+    handelIncreaseCart,
+    handelDecreaseCart,
+    handelDeleteCart
   };
   return <Context.Provider value={contextInfo}>{children}</Context.Provider>;
 };

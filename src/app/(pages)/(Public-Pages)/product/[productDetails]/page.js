@@ -1,15 +1,27 @@
 'use client';
+import { useEffect, useState } from 'react';
 import ProductInfo from "./ProductInfo";
 import RightSideInfo from "./RightSideInfo";
 
 export default function ProductDetails({params}) {
+  const [product, setProduct] = useState({});
+
+  useEffect(()=>{
+    fetch(`http://localhost:5000/api/v1/product/name/${params?.productDetails}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.status === "success"){
+        setProduct(data.data)
+      }
+    })
+  },[])
 
   return (
     <section className="pb-8">
       <div className="container">
         <div className="lg:flex shadow-lg mt-4 rounded overflow-hidden">
           <div className="lg:w-[75%] bg-base-100 p-4 text-neutral">
-            <ProductInfo params={params} />
+            <ProductInfo product={product} />
           </div>
 
           <div className="lg:w-[25%] bg-stone-50 p-4 text-sm">

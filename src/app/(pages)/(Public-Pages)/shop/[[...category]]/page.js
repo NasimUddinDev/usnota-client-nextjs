@@ -4,11 +4,21 @@ import ShopCategory from '../ShopCategory/ShopCategory';
 import ShopProducts from '../ShopProducts/ShopProducts';
 
 export default function category({params}) {
-  console.log(params)
-  const category = params.category[0];
-  const subCategory = params.category.length >= 2 && params.category[1];
-  const subSubCategory = params.category.length >= 3 && params.category[2];
+  const category = params?.category?.length >= 1 && params?.category[0];
+  const subCategory = params?.category?.length >= 2 && params.category[1];
+  const subSubCategory = params?.category?.length >= 3 && params.category[2];
 
+  let url = "";
+  if (category && !subCategory) {
+    url = `${category}`;
+  } else if (category && subCategory && !subSubCategory) {
+    url = `${category}/${subCategory}`;
+  } else if (category && subCategory && subSubCategory) {
+    url = `${category}/${subCategory}/${subSubCategory}`;
+  } else {
+    url = "";
+  }
+  console.log(`http://localhost:5000/api/v1/product/${url}`);
 
   return (
     <div className="pt-2">

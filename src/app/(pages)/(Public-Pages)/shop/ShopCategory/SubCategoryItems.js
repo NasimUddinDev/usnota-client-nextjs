@@ -28,8 +28,8 @@ const SubCategoryItems = ({ subCategory }) => {
         </button>
 
         <ul className={`pl-2 dropdown ${subDropdownToggle && "dropdownShow"}`}>
-          {subCategory?.subDropdown?.map((subSubCategory) => (
-            <li>
+          {subCategory?.subDropdown?.map((subSubCategory,i) => (
+            <li key={i}>
               <Link
                 href={subSubCategory.link}
                 className="flex items-center gap-2 hover:bg-gray-200 duration-200 hover:text-primary px-2 py-[4.5px]"

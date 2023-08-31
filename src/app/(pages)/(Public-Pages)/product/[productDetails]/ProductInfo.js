@@ -1,26 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiHeart, FiMinusCircle, FiPlusCircle, FiShare2 } from 'react-icons/fi';
 import { FaOpencart, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { AiOutlineCheck } from 'react-icons/ai';
 import Image from 'next/image';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
+import { UseContext } from '@/app/context/context';
+import { useEffect } from 'react';
 
-const ProductInfo = ({params}) => {
-const [product, setProduct] = useState({});
-
-  useEffect(()=>{
-    fetch(`http://localhost:5000/api/v1/product/${params?.productDetails}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.status === "success"){
-        setProduct(data.data)
-      }
-    })
-  },[])
-
+const ProductInfo = ({ product }) => {
   const [image, setImage] = useState("");
-  const [selectedSize, setSelectedSize] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+
+  const { carts,
+    handelAddToCart,
+    handelIncreaseCart,
+    handelDecreaseCart, } = UseContext();
+
+  const handelIncrease = () => {
+    setQuantity(quantity + 1)
+  }
+
+  const handelDecrease = () => {
+    if (quantity >= 1) {
+      setQuantity(quantity - 1)
+    }
+  }
+
+  const handelSelectSize = size =>{
+    if(selectedSize === size){
+      setSelectedSize("")
+    }else{
+      setSelectedSize(size)
+    }
+  }
+
+  const handelColorSelect = (clr) => {
+    if(selectedColor === clr){
+      setSelectedColor("")
+    }else{
+      setSelectedColor(clr)
+    }
+  }
 
   // Rating number to start convert
   const ratingStar = Array.from({ length: 5 }, (element, index) => {
@@ -44,14 +67,14 @@ const [product, setProduct] = useState({});
         <div className="relative">
           <PhotoProvider>
             <PhotoView src={image !== "" ? image : product?.thumbnail}>
-            <Image
-              width="100"
-              height="100"
-              src={image !== "" ? image : product?.thumbnail}
-              alt=""
-              className="w-full h-[350px] rounded"
-              title="click to zoom"
-          />
+              <Image
+                width="100"
+                height="100"
+                src={image !== "" ? image : product?.thumbnail}
+                alt=""
+                className="w-full h-[350px] rounded"
+                title="click to zoom"
+              />
             </PhotoView>
           </PhotoProvider>
 
@@ -63,9 +86,9 @@ const [product, setProduct] = useState({});
 
         <div className="grid grid-cols-5 gap-2 mt-4">
           {
-            product?.images?.map(img=>(
-              <button onClick={()=>setImage(img)}>
-                <Image  src={img} alt="" width="100" height="100" className="w-full h-16 rounded" />
+            product?.images?.map(img => (
+              <button onClick={() => setImage(img)}>
+                <Image src={img} alt="" width="100" height="100" className="w-full h-16 rounded" />
               </button>
             ))
           }
@@ -115,39 +138,19 @@ const [product, setProduct] = useState({});
           </div>
         </div>
 
-        {/* Quantity */}
-        <div className="py-3 border-y">
-          <div className="flex gap-6 items-center">
-            <p className="text-neutral opacity-70">Quantity: </p>
-
-            <div className="text-neutral opacity-70 px-2 py-1.5 flex gap-4">
-              <button className="text-xl hover:text-neutral duration-200">
-                <FiMinusCircle />
-              </button>
-              <div>
-                <p className="font-semibold text-center">1</p>
-              </div>
-              <button className="text-xl hover:text-neutral duration-200">
-                <FiPlusCircle />
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Size */}
         {product?.size?.length > 0 && (
-          <div className="flex gap-4 items-center mt-4">
+          <div className="flex gap-4 items-center my-4">
             <p>Size :</p>
 
             <div className="flex gap-2 items-center">
               {
-                product?.size?.map((size, i) => (
+                product?.size?.map((size) => (
                   <button
-                    key={i}
-                    onClick={() => setSelectedSize({ size, index: i })}
-                    className={`${
-                      i === selectedSize.index && 'bg-primary text-base-100'
-                    } text-[15px] py-1.5 px-2.5 rounded border scale-[.96] hover:scale-[1] hover:border-primary duration-300`}
+                    key={size}
+                    onClick={() => handelSelectSize(size)}
+                    className={`${size === selectedSize && 'bg-primary text-base-100'
+                      } text-[15px] py-1.5 px-2.5 rounded border scale-[.96] hover:scale-[1] hover:border-primary duration-300`}
                   >
                     {size}
                   </button>
@@ -157,11 +160,63 @@ const [product, setProduct] = useState({});
           </div>
         )}
 
+        {/* Color */}
+        {product?.color?.length > 0 && (
+          <div className="flex gap-4 items-center my-4">
+            <p>Color :</p>
+
+            <div className="flex gap-2 items-center">
+              {
+                product?.color?.map((clr) => (
+                  <button
+                    key={clr}
+                    onClick={() => handelColorSelect(clr)}
+                    className={`${clr === selectedColor && 'bg-primary text-base-100'
+                      } text-sm py-1.5 px-2.5 rounded border scale-[.96] hover:scale-[1] hover:border-primary duration-300`}
+                  >
+                    {clr}
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+        )}
+
+        {/* Quantity */}
+        <div className="py-3 flex gap-4 items-center border-y">
+          <h2>Quantity: </h2>
+
+          <div className="flex gap-2">
+            <button
+            onClick={handelDecrease}
+            className="text-2xl hover:text-neutral duration-200"
+          >
+            <FiMinusCircle />
+          </button>
+          <div>
+            <p className="w-14 font-semibold text-center">
+              {quantity}
+            </p>
+          </div>
+          <button
+            onClick={handelIncrease}
+            className="text-2xl hover:text-neutral duration-200"
+          >
+            <FiPlusCircle />
+          </button>
+          </div>
+        </div>
+
         {/* Buttons */}
-        <button className="mt-6 w-40 bg-primary text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300">
-          <FaOpencart />
-          Add To Card
-        </button>
+        <div className="flex gap-4 items-center mt-6">
+          <button
+              onClick={() => handelAddToCart({ product, selectedSize:selectedSize, selectedColor:selectedColor, quantity})}
+              className="w-40 bg-primary text-base-100 px-2 py-1.5 rounded flex items-center gap-1 justify-center scale-[.97] hover:scale-[1] duration-300"
+            >
+              <FaOpencart />
+              Add To Card
+          </button>
+        </div>
       </div>
     </div>
   );

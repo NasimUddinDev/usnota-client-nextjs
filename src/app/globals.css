@@ -100,3 +100,30 @@
 .rb-tabs-active-item {
   background: #e11e63 !important;
 }
+
+
+/* Sweet alert 2 custom style */
+h2#swal2-title {
+    font-size: 18px;
+}
+
+div#swal2-html-container {
+    font-size: 15px;
+}
+
+.swal2-icon.swal2-warning.swal2-icon-show {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.swal2-icon-content {
+    font-size: 35px !important;
+}
+
+button.swal2-confirm.swal2-styled {
+    background: #e11e63 !important;
+}
+
+button:where(.swal2-styled).swal2-confirm:focus {
+    box-shadow: none !important;
+}
