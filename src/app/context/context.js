@@ -113,7 +113,19 @@ const ContextProvider = ({ children }) => {
       )
     }
 
-    setCarts([...carts, { productId: product._id, quantity: quantity || 1, size: selectedSize, color: selectedColor}]);
+    const cartProduct= {
+      productId: product._id,
+      title: product.title,
+      slug: product.slug,
+      thumbnail:product.thumbnail,
+      discountPercentage:product.discountPercentage,
+      price:product.price,
+      quantity: quantity || 1,
+      size: selectedSize, 
+      color: selectedColor,
+    }
+
+    setCarts([...carts, {...cartProduct}]);
 
     toast.success("Add to Cart Success", {
       position: "top-center",
@@ -121,6 +133,8 @@ const ContextProvider = ({ children }) => {
     });
   };
 
+
+  // Handel Increase Cart Quantity
   const handelIncreaseCart = (product) => {
     const existed = carts.find((item) => item._id === product._id);
     if (existed) {
@@ -134,6 +148,7 @@ const ContextProvider = ({ children }) => {
     }
   };
 
+    // Handel Decrease Cart Quantity
   const handelDecreaseCart = (product) => {
     const existed = carts.find((item) => item._id === product._id);
     if (existed.quantity > 1) {
@@ -147,7 +162,7 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-  // Delete Cart
+  // Handel Delete Cart
   const handelDeleteCart = (product) => {
     const confirm = window.confirm("Are you sure delete this item");
     if (confirm) {

@@ -1,25 +1,25 @@
 "use client";
 import { cities, districts } from "@/Data/location";
-import { UseContext } from "@/app/context/context";
+import { UseContext } from '@/app/context/context';
 import  { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 // import Swal from "sweetalert2";
 // import ButtonSpinner from "../../../components/ButtonSpinner/ButtonSpinner";
 
 const Checkout = () => {
-  const {loggedUser} = UseContext();
+  const { carts } = UseContext();
   const [loading, setLoading] = useState(false);
   const [couponBox, setCouponBox] = useState(false);
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
 
   const [cityDropdown, setCityDropdown] = useState(false);
-  const [city, setCity] = useState("Dhaka");
+  const [city, setCity] = useState("");
   const [searchCity, setSearchCity] = useState("");
 
-  const [townDropdown, setTownDropdown] = useState(false);
-  const [town, setTown] = useState("");
-  const [searchTown, setSearchTown] = useState("");
+  const [districtDropdown, setDistrictDropdown] = useState(false);
+  const [district, setDistrict] = useState("");
+  const [searchDistrict, setSearchDistrict] = useState("");
 
 
   const handelSetCity = (selectedCity) => {
@@ -28,20 +28,35 @@ const Checkout = () => {
     setSearchCity("");
   };
 
-  const handelSetTown = (selectedTown) => {
-    setTown(selectedTown);
-    setTownDropdown(false);
-    setSearchTown("");
+  const handelSetDistrict = (selectedDistrict) => {
+    setDistrict(selectedDistrict);
+    setDistrictDropdown(false);
+    setSearchDistrict("");
   };
 
   // Subtotal - discount amount
-  // const subTotal = cart?.reduce(
-  //   (price, item) =>
-  //     price +
-  //     item.quantity *
-  //       parseInt(item.price - (item.price * item.discountPercentage) / 100),
-  //   0
-  // );
+  const subTotal = carts?.reduce(
+    (price, item) =>
+      price +
+      item.quantity *
+        parseInt(item.price - (item.price * item.discountPercentage) / 100),
+    0
+  );
+
+  let shipping = 0;
+
+  if(city !== "" && city === "Dhaka"){
+    shipping = 80
+  }else if(city !== "" && city !== "Dhaka"){
+    shipping = 150
+  }else{
+    shipping = 0
+  }
+
+  const tax = 0;
+  const grandTotal = subTotal + tax + parseInt(shipping) - discount;
+
+
 
   const handelCoupon = () => {
     if (coupon.toLowerCase() === "nr100") {
@@ -58,11 +73,6 @@ const Checkout = () => {
       });
     }
   };
-
-  // const shipping = city === "Dhaka" ? 80 : 150;
-  // const tax = 0;
-
-  // const grandTotal = subTotal + tax + parseInt(shipping) - discount;
 
   const handelPlaceOrder = (e) => {
     e.preventDefault();
@@ -81,7 +91,7 @@ const Checkout = () => {
       number,
       email,
       city,
-      town,
+      district,
       street,
       note,
     };
@@ -121,11 +131,11 @@ const Checkout = () => {
     });
   }, []);
 
-  // Remove Town Dropdown click other side
+  // Remove District Dropdown click other side
   useEffect(() => {
     window.addEventListener("click", (e) => {
-      if (!e.target.closest(".town")) {
-        setTownDropdown(false);
+      if (!e.target.closest(".district")) {
+        setDistrictDropdown(false);
       }
     });
   }, []);
@@ -180,13 +190,54 @@ const Checkout = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
+                <div className="relative district">
+                  <div className="text-sm mt-2">
+                    <h2>District</h2>
+                    <div
+                      onClick={() => setDistrictDropdown(!districtDropdown)}
+                      className="p-2 h-9 border rounded mt-2 cursor-pointer"
+                    >
+                      {district}
+                    </div>
+                  </div>
+
+                  {districtDropdown && (
+                    <div className="absolute bg-base-100 border rounded top-full left-0 p-2 w-full max-h-60 overflow-y-auto">
+                      <div>
+                        <input
+                          onChange={(e) => setSearchDistrict(e.target.value)}
+                          type="text"
+                          className="px-2 py-1 rounded w-full border outline-none placeholder:font-light"
+                          placeholder="search District"
+                        />
+                      </div>
+                      <ul>
+                        {districts
+                          .filter((district) =>
+                            district
+                              .toLowerCase()
+                              .includes(searchDistrict.toLowerCase())
+                          )
+                          .map((district) => (
+                            <li
+                              onClick={() => handelSetDistrict(district)}
+                              className="p-1 hover:bg-gray-200 duration-200 cursor-pointer"
+                            >
+                              {district}
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 <div className="relative city">
                   <div className="text-sm mt-2">
                     <h2>City</h2>
 
                     <div
                       onClick={() => setCityDropdown(!cityDropdown)}
-                      className="p-2 border rounded mt-2 cursor-pointer"
+                      className="p-2 h-9 border rounded mt-2 cursor-pointer"
                     >
                       {city}
                     </div>
@@ -216,47 +267,6 @@ const Checkout = () => {
                               className="p-1 hover:bg-gray-200 duration-200 cursor-pointer"
                             >
                               {city}
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative town">
-                  <div className="text-sm mt-2">
-                    <h2>Town</h2>
-                    <div
-                      onClick={() => setTownDropdown(!townDropdown)}
-                      className="p-2 h-9 border rounded mt-2 cursor-pointer"
-                    >
-                      {town}
-                    </div>
-                  </div>
-
-                  {townDropdown && (
-                    <div className="absolute bg-base-100 border rounded top-full left-0 p-2 w-full max-h-60 overflow-y-auto">
-                      <div>
-                        <input
-                          onChange={(e) => setSearchTown(e.target.value)}
-                          type="text"
-                          className="px-2 py-1 rounded w-full border outline-none placeholder:font-light"
-                          placeholder="search city"
-                        />
-                      </div>
-                      <ul>
-                        {districts
-                          .filter((town) =>
-                            town
-                              .toLowerCase()
-                              .includes(searchTown.toLowerCase())
-                          )
-                          .map((town) => (
-                            <li
-                              onClick={() => handelSetTown(town)}
-                              className="p-1 hover:bg-gray-200 duration-200 cursor-pointer"
-                            >
-                              {town}
                             </li>
                           ))}
                       </ul>
@@ -333,7 +343,7 @@ const Checkout = () => {
                 <div className="flex justify-between border-b py-1.5 font-semibold text-[15px]">
                   <h2>Subtotal</h2>
                   <p>
-                    ৳<span>1000.00</span>
+                    ৳<span>{subTotal}.00</span>
                   </p>
                 </div>
 
@@ -341,25 +351,27 @@ const Checkout = () => {
                   <h2 className="text-[15px]">
                     Shipping{" "}
                     <small>
-                      {city === "Dhaka" ? "(in Dhaka)" : "(outside Dhaka)"}
+                      {
+                        city !== "" && (city === "Dhaka" ? "(inside Dhaka)" : "(outside Dhaka)")
+                      }
                     </small>
                   </h2>
                   <div className="text-end">
-                    ৳<span>80.00</span>
+                    ৳<span>{shipping}.00</span>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center border-b py-1.5">
                   <h2 className="text-[15px]">Tax</h2>
                   <div className="text-end">
-                    ৳<span>0.00</span>
+                    ৳<span>{tax}.00</span>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center border-b py-1.5">
                   <h2 className="text-[15px]">Discount</h2>
                   <div className="text-end">
-                    -৳<span>0.00</span>
+                    -৳<span>{discount}.00</span>
                   </div>
                 </div>
 
@@ -367,7 +379,7 @@ const Checkout = () => {
                 <div className="flex justify-between border-b py-3 font-semibold text-lg">
                   <h2 className="text-title">Total</h2>
                   <p className="text-primary">
-                    ৳ <span>1000.00 </span>
+                    ৳ <span>{grandTotal}.00 </span>
                   </p>
                 </div>
               </div>

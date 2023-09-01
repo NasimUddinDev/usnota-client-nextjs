@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-const CartDetails = ({ cart }) => {
+const CartDetails = ({ carts }) => {
   // Subtotal - discount amount
-  const subTotal = cart?.reduce(
+  const subTotal = carts?.reduce(
     (price, item) =>
       price +
       item.quantity *

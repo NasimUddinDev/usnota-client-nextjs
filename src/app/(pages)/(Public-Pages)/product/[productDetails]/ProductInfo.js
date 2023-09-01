@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiHeart, FiMinusCircle, FiPlusCircle, FiShare2 } from 'react-icons/fi';
 import { FaOpencart, FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { AiOutlineCheck } from 'react-icons/ai';
 import Image from 'next/image';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
+
 import { UseContext } from '@/app/context/context';
-import { useEffect } from 'react';
 
 const ProductInfo = ({ product }) => {
   const [image, setImage] = useState("");
