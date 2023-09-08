@@ -60,7 +60,7 @@ const Checkout = () => {
 
   const handelCoupon = () => {
     if (coupon.toLowerCase() === "nr100") {
-      setDiscount(99);
+      setDiscount(100);
       setCouponBox(false);
       toast.success("Coupon add success", {
         autoClose: 1000,
@@ -313,31 +313,33 @@ const Checkout = () => {
                   <p>PRICE</p>
                 </div>
 
+                {/* Product lists */}
                 <ul>
-                 <li
+                  {
+                    carts?.map((product,i)=>(
+                    <li
+                    key={i}
                       className="flex justify-between border-b py-1.5 text-sm text-paragraph"
                     >
                       <h2>
-                        Japani silk{" "}
-                        42 ×{" "}
-                        <span>1</span>
+                        {product?.title} - 
+                        {product?.size && product?.size} {product?.color && product?.color} × {product?.quantity}
                       </h2>
                       <p>
-                        ৳100
-                        {/* <span>
                           {parseInt(
-                            product.discountPercentage >= 1
+                            product?.discountPercentage >= 1
                               ? parseInt(
-                                  product.price -
-                                    (product.price *
-                                      product.discountPercentage) /
+                                  product?.price -
+                                    (product?.price *
+                                      product?.discountPercentage) /
                                       100
                                 )
-                              : product.price
-                          ) * parseInt(product.quantity)}
-                        </span> */}
+                              : product?.price
+                          ) * parseInt(product?.quantity)}
                       </p>
                     </li>
+                    ))
+                  }
                 </ul>
 
                 <div className="flex justify-between border-b py-1.5 font-semibold text-[15px]">

@@ -80,8 +80,15 @@ const ContextProvider = ({ children }) => {
 
 
   //------- Handel cart
-  const localStorageCart = JSON.parse(localStorage.getItem("usnota_cart"));
+  const [localStorageCart, setLocalStorageCart] = useState([]);
   const [carts, setCarts] = useState(localStorageCart || []);
+
+  // Get Local Cart
+  useEffect(() => {
+    setLocalStorageCart(JSON.parse(localStorage.getItem("usnota_cart")))
+  }, []);
+  
+  // Set Local Cart
   useEffect(() => {
     localStorage.setItem("usnota_cart", JSON.stringify(carts));
   }, [carts]);
