@@ -25,7 +25,7 @@ export default function MainHeader() {
 
   const [formToggle, setFormToggle] = useState('login');
   const [accountDropdown, setAccountDropdown] = useState(false);
-  const { loggedUser, setLoggedUser } = UseContext();
+  const { loggedUser, setLoggedUser,carts } = UseContext();
 
   useEffect(() => {
     window.addEventListener('click', e => {
@@ -128,10 +128,16 @@ export default function MainHeader() {
               <div className="relative ">
                 <RiShoppingCartLine className="text-2xl" />
                 <div className="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-primary text-base-100 border-base-100 rounded-full -top-3 -right-3">
-                  0
+                  {carts?.length}
                 </div>
               </div>
-              <h1 className="font-medium">৳00</h1>
+              <h1 className="font-medium">৳{carts?.reduce(
+    (price, item) =>
+      price +
+      item.quantity *
+        parseInt(item.price - (item.price * item.discountPercentage) / 100),
+    0
+  )}</h1>
             </Link>
 
             {loggedUser?.status === 'success' ? (

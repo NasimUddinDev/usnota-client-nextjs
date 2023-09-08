@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
+import { UseContext } from '@/app/context/context';
 
 export default function CartItem({ product }) {
+  const { handelIncreaseCart,handelDecreaseCart,handelDeleteCart } = UseContext();
   const {thumbnail, title, slug, discountPercentage, price, quantity, size, color} = product;
 
   const discountPrice = parseInt(price - (price * discountPercentage) / 100);
@@ -52,7 +54,7 @@ export default function CartItem({ product }) {
 
       <td className="px-6 py-4">
         <div className="w-max flex items-center gap-3">
-          <button className="text-2xl hover:text-neutral duration-200">
+          <button onClick={()=>handelDecreaseCart(product)} className="text-2xl hover:text-neutral duration-200">
             <FiMinusCircle />
           </button>
           <div>
@@ -60,7 +62,7 @@ export default function CartItem({ product }) {
               {quantity}
             </p>
           </div>
-          <button className="text-2xl hover:text-neutral duration-200">
+          <button onClick={()=>handelIncreaseCart(product)} className="text-2xl hover:text-neutral duration-200">
             <FiPlusCircle />
           </button>
         </div>
@@ -73,7 +75,7 @@ export default function CartItem({ product }) {
       </td>
 
       <td className="px-6 py-4">
-        <button className="font-medium text-sm text-red-600 hover:underline">
+        <button onClick={()=>handelDeleteCart(product)} className="font-medium text-sm text-red-600 hover:underline">
           Remove
         </button>
       </td>

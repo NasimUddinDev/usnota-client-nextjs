@@ -1,7 +1,8 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
+
 import Swal from 'sweetalert2'
-  import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export const Context = createContext();
 
@@ -80,13 +81,8 @@ const ContextProvider = ({ children }) => {
 
 
   //------- Handel cart
-  const [localStorageCart, setLocalStorageCart] = useState([]);
+  const localStorageCart =JSON.parse(localStorage.getItem("usnota_cart"));
   const [carts, setCarts] = useState(localStorageCart || []);
-
-  // Get Local Cart
-  useEffect(() => {
-    setLocalStorageCart(JSON.parse(localStorage.getItem("usnota_cart")))
-  }, []);
   
   // Set Local Cart
   useEffect(() => {
@@ -111,7 +107,8 @@ const ContextProvider = ({ children }) => {
       )
     }
 
-    const existed = carts?.find((item) => item.size === selectedSize && item.color === selectedColor);
+    const existed = carts?.find((item) => (item._id === product._id) && (item.size === selectedSize) && (item.color === selectedColor));
+
     if(existed){
       return Swal.fire(
         'Already Added This Product',
@@ -121,7 +118,7 @@ const ContextProvider = ({ children }) => {
     }
 
     const cartProduct= {
-      productId: product._id,
+      _id: product._id,
       title: product.title,
       slug: product.slug,
       thumbnail:product.thumbnail,
@@ -132,22 +129,24 @@ const ContextProvider = ({ children }) => {
       color: selectedColor,
     }
 
-    setCarts([...carts, {...cartProduct}]);
-
-    toast.success("Add to Cart Success", {
-      position: "top-center",
-      autoClose: 1500,
-    });
+    if(!existed){
+        setCarts([...carts, {...cartProduct}]);
+        toast.success("Add to Cart Success", {
+        position: "top-center",
+        autoClose: 1500,
+      });
+    }
   };
 
 
   // Handel Increase Cart Quantity
   const handelIncreaseCart = (product) => {
-    const existed = carts.find((item) => item._id === product._id);
+    const existed = carts?.find((item) => (item._id === product._id) && (item.size === product.size) && (item.color === product.color));
+    
     if (existed) {
       setCarts(
         carts.map((item) =>
-          item._id === product._id
+          (item._id === product._id) && (item.size === product.size) && (item.color === product.color)
             ? { ...existed, quantity: existed.quantity + 1 }
             : item
         )
@@ -157,11 +156,11 @@ const ContextProvider = ({ children }) => {
 
     // Handel Decrease Cart Quantity
   const handelDecreaseCart = (product) => {
-    const existed = carts.find((item) => item._id === product._id);
-    if (existed.quantity > 1) {
+    const existed = carts?.find(item => (item._id === product._id) && (item.size === product.size) && (item.color === product.color));
+    
+    if (existed && existed?.quantity > 1) {
       setCarts(
-        carts.map((item) =>
-          item._id === product._id
+        carts.map(item => (item._id === product._id) && (item.size === product.size) && (item.color === product.color)
             ? { ...existed, quantity: existed.quantity - 1 }
             : item
         )
@@ -173,9 +172,12 @@ const ContextProvider = ({ children }) => {
   const handelDeleteCart = (product) => {
     const confirm = window.confirm("Are you sure delete this item");
     if (confirm) {
-      const newCart = carts.filter(
-        (cartProduct) => cartProduct._id !== product._id
-      );
+      const newCart = carts?.filter(item => 
+        (item._id === product._id) && 
+        (product.color === "" ? item.color === product.color : item.color !== product.color) &&
+        (product.size === "" ? item.size === product.size : item.size !== product.size)
+        )
+
       setCarts(newCart);
     }
   };
