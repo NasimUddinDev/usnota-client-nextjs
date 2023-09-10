@@ -2,6 +2,8 @@
 import Link from "next/link";
 import ShopCategory from '../ShopCategory/ShopCategory';
 import ShopProducts from '../ShopProducts/ShopProducts';
+import getData from "@/utils/getData";
+import { useEffect, useState } from "react";
 
 export default function category({params}) {
   const category = params?.category?.length >= 1 && params?.category[0];
@@ -18,7 +20,19 @@ export default function category({params}) {
   } else {
     url = "";
   }
-  console.log(`http://localhost:5000/api/v1/product/${url}`);
+
+  const [products,setProducts] = useState([]);
+  const [loading,setLoading] = useState(false);
+  useEffect(()=>{
+    setLoading(true)
+    fetch(`http://localhost:5000/api/v1/product/${url}`,{
+      cache: 'no-store'
+    })
+    .then(res => res.json())
+    .then(data => {
+      setProducts(data?.data)
+    }).finally(()=>{setLoading(false)})
+  },[url])
 
   return (
     <div className="pt-2">
@@ -71,7 +85,7 @@ export default function category({params}) {
 
         <div className="shopPages flex gap-5">
           <ShopCategory />
-          <ShopProducts />
+          <ShopProducts products={products} loading={loading}/>
         </div>
       </div>
     </div>

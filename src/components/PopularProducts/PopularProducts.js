@@ -1,11 +1,13 @@
-'use client';
 import Link from 'next/link';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import ProductCard from './../ProductCard/ProductCard';
-import { UseContext } from '@/app/context/context';
+import getData from '@/utils/getData';
 
-const PopularProducts = () => {
-  const { products } = UseContext();
+export default async function PopularProducts(){
+  const {data:products, error} = await getData("product")
+  if(products?.length <= 0 && !error){
+    return "Loading..."
+  }
 
   return (
     <div className="my-4">
@@ -26,13 +28,15 @@ const PopularProducts = () => {
 
         {/* Product Card */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-2">
-          {products?.data?.map(product => (
-            <ProductCard product={product} />
-          ))}
+          {
+            error && "Fetch Problem"
+          }
+          {
+            products?.length > 0 && !error ? products?.map(product => <ProductCard product={product} />) : error
+          }
         </div>
       </div>
     </div>
   );
 };
 
-export default PopularProducts;

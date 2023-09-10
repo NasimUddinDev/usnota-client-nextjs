@@ -11,8 +11,6 @@ const ContextProvider = ({ children }) => {
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [products, setProducts] = useState([]);
-
   const login = loginInfo => {
     setLoading(true);
 
@@ -68,20 +66,8 @@ const ContextProvider = ({ children }) => {
   }, []);
 
 
-  // Get all products
-  useEffect(() => {
-    fetch('http://localhost:5000/api/v1/product')
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          setProducts(data);
-        }
-      });
-  }, []);
-
-
   //------- Handel cart
-  const localStorageCart =JSON.parse(localStorage.getItem("usnota_cart"));
+  const localStorageCart = JSON.parse(localStorage.getItem("usnota_cart"));
   const [carts, setCarts] = useState(localStorageCart || []);
   
   // Set Local Cart
@@ -188,7 +174,6 @@ const ContextProvider = ({ children }) => {
     login,
     loginError,
     loading,
-    products,
     carts,
     handelAddToCart,
     handelIncreaseCart,

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import ProductCard from "./../ProductCard/ProductCard";
+import getData from "@/utils/getData";
 
-const FlashSale = () => {
+export default async function FlashSale(){
+  const {data:products, error} = await getData("http://localhost:5000/api/v1/product/flash-products")
 
   return (
     <div className="my-4">
@@ -23,11 +25,12 @@ const FlashSale = () => {
 
         {/* Product Card */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mt-2">
-          <ProductCard />
+          {
+            products?.length > 0 && products?.map(product=><ProductCard product={product} />)
+          }
         </div>
       </div>
     </div>
   );
 };
 
-export default FlashSale;
