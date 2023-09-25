@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import ShopCategory from '../ShopCategory/ShopCategory';
-import ShopProducts from '../ShopProducts/ShopProducts';
+import ShopCategory from "../ShopCategory/ShopCategory";
+import ShopProducts from "../ShopProducts/ShopProducts";
 import getData from "@/utils/getData";
 import { useEffect, useState } from "react";
 
-export default function category({params}) {
+export default function category({ params }) {
   const category = params?.category?.length >= 1 && params?.category[0];
   const subCategory = params?.category?.length >= 2 && params.category[1];
   const subSubCategory = params?.category?.length >= 3 && params.category[2];
@@ -21,18 +21,21 @@ export default function category({params}) {
     url = "";
   }
 
-  const [products,setProducts] = useState([]);
-  const [loading,setLoading] = useState(false);
-  useEffect(()=>{
-    setLoading(true)
-    fetch(`http://localhost:5000/api/v1/product/${url}`,{
-      cache: 'no-store'
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://usnota-server.vercel.app/api/v1/product/${url}`, {
+      cache: "no-store",
     })
-    .then(res => res.json())
-    .then(data => {
-      setProducts(data?.data)
-    }).finally(()=>{setLoading(false)})
-  },[url])
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data?.data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [url]);
 
   return (
     <div className="pt-2">
@@ -49,45 +52,38 @@ export default function category({params}) {
                 Shop
               </Link>
             </li>
-            {
-              category && subCategory ?  
+            {category && subCategory ? (
               <li>
                 <Link href={`/shop/${category}`} className="text-primary">
                   {category}
                 </Link>
               </li>
-              : 
+            ) : (
               <li>{category}</li>
-            }
-           
-            {
-              (subCategory && subSubCategory) ? 
+            )}
+
+            {subCategory && subSubCategory ? (
               <li>
-                <Link href={`/shop/${category}/${subCategory}`} className="text-primary">
+                <Link
+                  href={`/shop/${category}/${subCategory}`}
+                  className="text-primary"
+                >
                   {subCategory}
                 </Link>
               </li>
-              :
-              subCategory && 
-              <li>
-                {subCategory}
-              </li> 
-            }
+            ) : (
+              subCategory && <li>{subCategory}</li>
+            )}
 
-            {
-              subSubCategory && 
-              <li>
-                {subSubCategory}
-              </li>
-            }
+            {subSubCategory && <li>{subSubCategory}</li>}
           </ul>
         </div>
 
         <div className="shopPages flex gap-5">
           <ShopCategory />
-          <ShopProducts products={products} loading={loading}/>
+          <ShopProducts products={products} loading={loading} />
         </div>
       </div>
     </div>
-  )
+  );
 }

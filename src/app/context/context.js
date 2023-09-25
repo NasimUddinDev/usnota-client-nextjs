@@ -14,7 +14,7 @@ const ContextProvider = ({ children }) => {
   const login = (loginInfo) => {
     setLoading(true);
 
-    fetch("http://localhost:5000/api/v1/auth/login", {
+    fetch("https://usnota-server.vercel.app/api/v1/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const ContextProvider = ({ children }) => {
         if (data?.status === "success") {
           localStorage.setItem("usnota_jwt", data?.token);
 
-          fetch("http://localhost:5000/api/v1/user/me", {
+          fetch("https://usnota-server.vercel.app/api/v1/user/me", {
             headers: {
               authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
             },
@@ -52,7 +52,7 @@ const ContextProvider = ({ children }) => {
 
   // Get Logged user
   useEffect(() => {
-    fetch("http://localhost:5000/api/v1/user/me", {
+    fetch("https://usnota-server.vercel.app/api/v1/user/me", {
       headers: {
         authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
       },

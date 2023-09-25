@@ -1,20 +1,22 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
 import ProductInfo from "./ProductInfo";
 import RightSideInfo from "./RightSideInfo";
 
-export default function ProductDetails({params}) {
+export default function ProductDetails({ params }) {
   const [product, setProduct] = useState({});
 
-  useEffect(()=>{
-    fetch(`http://localhost:5000/api/v1/product/name/${params?.productDetails}`)
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.status === "success"){
-        setProduct(data.data)
-      }
-    })
-  },[])
+  useEffect(() => {
+    fetch(
+      `https://usnota-server.vercel.app/api/v1/product/name/${params?.productDetails}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setProduct(data.data);
+        }
+      });
+  }, []);
 
   return (
     <section className="pb-8">
