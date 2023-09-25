@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -11,10 +12,10 @@ import { UseContext } from "@/app/context/context";
 import Header from "@/components/Header/Header";
 
 export default function Login() {
-  const [showPassword,setShowPassword] = useState(false);
-  const {login,loginError,loading} = UseContext();
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, loginError, loading } = UseContext();
 
-  const handelLogin = e => {
+  const handelLogin = (e) => {
     e.preventDefault();
 
     const form = e.target;
@@ -26,106 +27,106 @@ export default function Login() {
       password,
     };
 
-    login(loginInfo)
+    login(loginInfo);
 
-    form.reset()
-  }
+    form.reset();
+  };
 
   return (
     <>
-   
       <Head>
         <title>Join - Instantkaj</title>
       </Head>
-    {/* <Header/>    */}
+      {/* <Header/>    */}
       <div className="flex justify-center items-center h-screen">
         <div className="w-[95%] sm:w-96 shadow-lg p-6 rounded">
-      <img src="/logo.png" alt="" className="w-32 mx-auto" width="100" height="100" />
-      <h6 className="text-lg font-medium mt-2 text-center">Login</h6>
+          <img
+            src="/logo.png"
+            alt=""
+            className="w-32 mx-auto"
+            width="100"
+            height="100"
+          />
+          <h6 className="text-lg font-medium mt-2 text-center">Login</h6>
 
-      <form onSubmit={handelLogin}>
-        <div className="mt-10 text-neutral">
-          <div className="mb-6">
-            <div className="relative">
-              <span className="absolute bottom-2 text-neutral/80">
-                <MdEmail />
-              </span>
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
-                required
-              />
-            </div>
-          </div>
+          <form onSubmit={handelLogin}>
+            <div className="mt-10 text-neutral">
+              <div className="mb-6">
+                <div className="relative">
+                  <span className="absolute bottom-2 text-neutral/80">
+                    <MdEmail />
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
+                    required
+                  />
+                </div>
+              </div>
 
-          <div className="mb-2">
-            <div className="relative">
-              <span className="absolute bottom-2 text-neutral/80">
-                <AiFillUnlock className="text-lg" />
-              </span>
+              <div className="mb-2">
+                <div className="relative">
+                  <span className="absolute bottom-2 text-neutral/80">
+                    <AiFillUnlock className="text-lg" />
+                  </span>
 
-              <input
-                type={ `${showPassword ? "text" : "password"}`}
-                name="password"
-                placeholder="Password"
-                className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
-                required
-              />
+                  <input
+                    type={`${showPassword ? "text" : "password"}`}
+                    name="password"
+                    placeholder="Password"
+                    className="w-full border-b focus:border-b-primary outline-none pl-8 pb-1 placeholder:font-light"
+                    required
+                  />
 
-              <div
-                className="absolute right-2 bottom-2 cursor-pointer"
-                onClick={()=>setShowPassword(!showPassword)}
-              >
-                <span className={`${showPassword ? "block" : "hidden"}`}>
-                  <AiFillEye />
-                </span>
-                <span className={`${showPassword ? "hidden" : "block"}`}>
-                  <AiFillEyeInvisible />
-                </span>
+                  <div
+                    className="absolute right-2 bottom-2 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <span className={`${showPassword ? "block" : "hidden"}`}>
+                      <AiFillEye />
+                    </span>
+                    <span className={`${showPassword ? "hidden" : "block"}`}>
+                      <AiFillEyeInvisible />
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {loginError && (
+                <p className="text-sm text-red-500">{loginError}</p>
+              )}
+
+              <div className="mb-4 flex justify-between items-center">
+                <label className="label gap-2 justify-start items-center cursor-pointer">
+                  <input type="checkbox" className="checkbox checkbox-xs" />
+                  <span className="label-text">Remember me</span>
+                </label>
+
+                <div>
+                  <Link
+                    href="/forgot-password"
+                    className="text-[13px] text-neutral/70 underline hover:text-primary duration-300"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex flex-col w-full border-opacity-50">
+                  <button
+                    type="submit"
+                    className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300"
+                    disabled={loading && true}
+                  >
+                    {loading ? "Loading..." : "Log In"}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-
-          {
-            loginError && <p className="text-sm text-red-500">{loginError}</p>
-          }
-
-          <div className="mb-4 flex justify-between items-center">
-            <label className="label gap-2 justify-start items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-xs"
-              />
-              <span className="label-text">Remember me</span>
-            </label>
-
-            <div>
-              <Link
-                href="/forgot-password"
-                className="text-[13px] text-neutral/70 underline hover:text-primary duration-300"
-              >
-                Forgot Password?
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex flex-col w-full border-opacity-50">
-              <button
-                type="submit"
-                className="w-full py-2 font-semibold text-base-100 bg-primary rounded hover:bg-opacity-90 duration-300"
-                disabled={loading && true}
-              >
-                {
-                  loading ? "Loading..." : "Log In"
-                }
-              </button>
-            </div>
-          </div>
-        </div>
-      </form> 
+          </form>
 
           <div>
             <div className="divider text-neutral/50">OR</div>
