@@ -1,48 +1,48 @@
-'use client';
-import { createContext, useContext, useEffect, useState } from 'react';
+"use client";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import Swal from 'sweetalert2'
-import { toast } from 'react-toastify';
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [loginError, setLoginError] = useState('');
+  const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const login = loginInfo => {
+  const login = (loginInfo) => {
     setLoading(true);
 
-    fetch('http://localhost:5000/api/v1/auth/login', {
-      method: 'POST',
+    fetch("http://localhost:5000/api/v1/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(loginInfo),
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data?.status === 'fail') {
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.status === "fail") {
           setLoginError(data.message);
         }
-        if (data?.status === 'success') {
-          localStorage.setItem('usnota_jwt', data?.token);
+        if (data?.status === "success") {
+          localStorage.setItem("usnota_jwt", data?.token);
 
-          fetch('http://localhost:5000/api/v1/user/me', {
+          fetch("http://localhost:5000/api/v1/user/me", {
             headers: {
-              authorization: `bearer ${localStorage.getItem('usnota_jwt')}`,
+              authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
             },
           })
-            .then(res => res.json())
-            .then(data => {
-              if (data.status === 'success') {
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.status === "success") {
                 setLoggedUser(data);
               }
             });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
@@ -52,87 +52,94 @@ const ContextProvider = ({ children }) => {
 
   // Get Logged user
   useEffect(() => {
-    fetch('http://localhost:5000/api/v1/user/me', {
+    fetch("http://localhost:5000/api/v1/user/me", {
       headers: {
-        authorization: `bearer ${localStorage.getItem('usnota_jwt')}`,
+        authorization: `bearer ${localStorage.getItem("usnota_jwt")}`,
       },
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
           setLoggedUser(data);
         }
       });
   }, []);
 
-
   //------- Handel cart
-  const localStorageCart = JSON.parse(localStorage.getItem("usnota_cart"));
-  const [carts, setCarts] = useState(localStorageCart || []);
-  
+  // const localStorageCart = JSON.parse(localStorage.getItem("usnota_cart"));
+  const [carts, setCarts] = useState([]);
+
   // Set Local Cart
-  useEffect(() => {
-    localStorage.setItem("usnota_cart", JSON.stringify(carts));
-  }, [carts]);
+  // useEffect(() => {
+  //   localStorage.setItem("usnota_cart", JSON.stringify(carts));
+  // }, [carts]);
 
-  // // Add Cart 
-  const handelAddToCart = ({product, quantity, selectedSize, selectedColor}) => {
-    if(product.size.length > 0  && !selectedSize){
-     return Swal.fire(
-        'Please Select Size',
-        "",
-        'warning',
-      )
+  // // Add Cart
+  const handelAddToCart = ({
+    product,
+    quantity,
+    selectedSize,
+    selectedColor,
+  }) => {
+    if (product.size.length > 0 && !selectedSize) {
+      return Swal.fire("Please Select Size", "", "warning");
     }
 
-    if(product.color.length > 0  && !selectedColor){
-     return Swal.fire(
-        'Please Select Color',
-        "",
-        'warning'
-      )
+    if (product.color.length > 0 && !selectedColor) {
+      return Swal.fire("Please Select Color", "", "warning");
     }
 
-    const existed = carts?.find((item) => (item._id === product._id) && (item.size === selectedSize) && (item.color === selectedColor));
+    const existed = carts?.find(
+      (item) =>
+        item._id === product._id &&
+        item.size === selectedSize &&
+        item.color === selectedColor
+    );
 
-    if(existed){
+    if (existed) {
       return Swal.fire(
-        'Already Added This Product',
-        'If you want to increase Product quantity, please go cart page and increase quantity.',
-        'warning',
-      )
+        "Already Added This Product",
+        "If you want to increase Product quantity, please go cart page and increase quantity.",
+        "warning"
+      );
     }
 
-    const cartProduct= {
+    const cartProduct = {
       _id: product._id,
       title: product.title,
       slug: product.slug,
-      thumbnail:product.thumbnail,
-      discountPercentage:product.discountPercentage,
-      price:product.price,
+      thumbnail: product.thumbnail,
+      discountPercentage: product.discountPercentage,
+      price: product.price,
       quantity: quantity || 1,
-      size: selectedSize, 
+      size: selectedSize,
       color: selectedColor,
-    }
+    };
 
-    if(!existed){
-        setCarts([...carts, {...cartProduct}]);
-        toast.success("Add to Cart Success", {
+    if (!existed) {
+      setCarts([...carts, { ...cartProduct }]);
+      toast.success("Add to Cart Success", {
         position: "top-center",
         autoClose: 1500,
       });
     }
   };
 
-
   // Handel Increase Cart Quantity
   const handelIncreaseCart = (product) => {
-    const existed = carts?.find((item) => (item._id === product._id) && (item.size === product.size) && (item.color === product.color));
-    
+    const existed = carts?.find(
+      (item) =>
+        item._id === product._id &&
+        item.size === product.size &&
+        item.color === product.color
+    );
+
     if (existed) {
       setCarts(
         carts.map((item) =>
-          (item._id === product._id) && (item.size === product.size) && (item.color === product.color)
+          item._id === product._id &&
+          item.size === product.size &&
+          item.color === product.color
             ? { ...existed, quantity: existed.quantity + 1 }
             : item
         )
@@ -140,13 +147,21 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-    // Handel Decrease Cart Quantity
+  // Handel Decrease Cart Quantity
   const handelDecreaseCart = (product) => {
-    const existed = carts?.find(item => (item._id === product._id) && (item.size === product.size) && (item.color === product.color));
-    
+    const existed = carts?.find(
+      (item) =>
+        item._id === product._id &&
+        item.size === product.size &&
+        item.color === product.color
+    );
+
     if (existed && existed?.quantity > 1) {
       setCarts(
-        carts.map(item => (item._id === product._id) && (item.size === product.size) && (item.color === product.color)
+        carts.map((item) =>
+          item._id === product._id &&
+          item.size === product.size &&
+          item.color === product.color
             ? { ...existed, quantity: existed.quantity - 1 }
             : item
         )
@@ -158,11 +173,16 @@ const ContextProvider = ({ children }) => {
   const handelDeleteCart = (product) => {
     const confirm = window.confirm("Are you sure delete this item");
     if (confirm) {
-      const newCart = carts?.filter(item => 
-        (item._id === product._id) && 
-        (product.color === "" ? item.color === product.color : item.color !== product.color) &&
-        (product.size === "" ? item.size === product.size : item.size !== product.size)
-        )
+      const newCart = carts?.filter(
+        (item) =>
+          item._id === product._id &&
+          (product.color === ""
+            ? item.color === product.color
+            : item.color !== product.color) &&
+          (product.size === ""
+            ? item.size === product.size
+            : item.size !== product.size)
+      );
 
       setCarts(newCart);
     }
@@ -178,7 +198,7 @@ const ContextProvider = ({ children }) => {
     handelAddToCart,
     handelIncreaseCart,
     handelDecreaseCart,
-    handelDeleteCart
+    handelDeleteCart,
   };
   return <Context.Provider value={contextInfo}>{children}</Context.Provider>;
 };
